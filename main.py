@@ -70,13 +70,16 @@ def get_user_locations(base_url: str, user_id_range, filename: str, max_workers:
         filename: Output filename
         max_workers: Number of concurrent threads (default: 20)
     """
-    burp0_cookies = {"cf_clearance": "ycEdGitWnJ4V5_.m5ejlwKQDtoVnC1EkuucOw7ksCbI-1764593420-1.2.1.1-EK1m4zH2dgcB6eCTLkxWrfbX5Fgx5fpz1QgnwzhIWehG.MEd1xib0JSFOS3lQBBwW0_szLthU.1YD3ImDthNqhmcdHZw9Mog4FSYozXlF6GbnaU.uHVquzLtSoHWcD6B1vaSU9y5cpXsVhLzdeRJmccwujYWAITBL9.C.YQXBzyFhRaK5.iObGGpVS0cro2Q_nZiJX.xyNCul6l8QAc.WjUrB2_fFhClhmhJLnCT6bhsRYo.ZyNoe31iIbyoIGAF"}
+    burp0_cookies = {"cf_clearance": "xThufzN_LUmWzJIyFrLS43cQ3_451rlOkA34OWtGwjc-1765973011-1.2.1.1-pGyvuO_xIoET2I6yskHz7U5fu1eZycEZokjN_hQN3a3KyeDRW7o4RC2diU0Tze2wfM7TmciTUkplarrpIz1pGUzPajCtmOViaIcwNUbT.m3OhfWvCl6Dksjwp2MDoK9xRK37Ms21rEcUb2VLEqldYYwHpoo6J4YQuCWkrXB5XblRTj8c.2dy1LXNAVGhWaznmxnWTUUBALEJ.X_sk7QvslZS08b6F6y1mOnNCJLxBJBo7zjnfa3jsnE5WbNP8iq9"}
     burp0_headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
     
     # Use Session for connection pooling
     session = requests.Session()
     file_lock = Lock()
-    results = []
+    
+    # Open file in write mode to start fresh, then switch to append mode
+    with open(filename, "w", encoding="utf-8") as outfile:
+        pass  # Create/clear the file
     
     # Process user IDs concurrently
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
@@ -86,27 +89,27 @@ def get_user_locations(base_url: str, user_id_range, filename: str, max_workers:
             for user_id in user_id_range
         }
         
-        # Collect results as they complete
+        # Write results to file as they complete
         for future in as_completed(future_to_user_id):
             user_id, username = future.result()
-            results.append((user_id, username))
             print(f"Crawled id: {user_id}, User: {username}")  # progress log
+            
+            # Write to file immediately with thread-safe lock
+            with file_lock:
+                with open(filename, "a", encoding="utf-8") as outfile:
+                    if username != "N/A":
+                        outfile.write(f"{username}\n")
+                    else:
+                        outfile.write("\n")
     
     session.close()
-    
-    # Sort results by user_id to maintain order, then write to file
-    results.sort(key=lambda x: x[0])
-    with open(filename, "w", encoding="utf-8") as outfile:
-        for user_id, username in results:
-            if username != "N/A":
-                outfile.write(f"{username}\n")
 
 
 def filter_passwords(input_file: str, output_file: str, pattern_type: str = "default", custom_pattern: str = None) -> None:
     """Filter passwords from input file based on regex pattern and write to output file."""
     # Define available patterns
     patterns = {
-        "voz_username": "^[a-zA-Z0-9._-]+$",
+        "voz_username": "https\://voz\.vn/u/(.*?)\.",
         "all_four": "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[\\`~!@#$%^&*()_+\/*\-=.\[\]\{\}\":;\'?,<>]).{8,16}$",
         "three_conditions": "^(?![a-zA-Z]+$)(?![A-Z0-9]+$)(?![A-Z\\W_]+$)(?![a-z0-9]+$)(?![a-z\\W_]+$)(?![0-9\\W_]+$)[a-zA-Z0-9\\W_]{6,16}$",
         "letter_digit_special": "^(?=.*[A-Za-z])(?=.*\d)(?=.*[\\`~!@#$%^&*()_+\/*\-=.\[\]\{\}\":;\'?,<>])[A-Za-z\d\\`~!@#$%^&*()_+\/*\-=.\[\]\{\}\":;\'?,<>]{6,16}$",

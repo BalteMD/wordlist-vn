@@ -83,7 +83,7 @@ options:
 
 #### Alternative: Crawling Voz.vn with Feroxbuster
 ```
-.\feroxbuster.exe -u https://voz.vn/u/ -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36" -b "cf_clearance=ycEdGitWnJ4V5_.m5ejlwKQDtoVnC1EkuucOw7ksCbI-1764593420-1.2.1.1-EK1m4zH2dgcB6eCTLkxWrfbX5Fgx5fpz1QgnwzhIWehG.MEd1xib0JSFOS3lQBBwW0_szLthU.1YD3ImDthNqhmcdHZw9Mog4FSYozXlF6GbnaU.uHVquzLtSoHWcD6B1vaSU9y5cpXsVhLzdeRJmccwujYWAITBL9.C.YQXBzyFhRaK5.iObGGpVS0cro2Q_nZiJX.xyNCul6l8QAc.WjUrB2_fFhClhmhJLnCT6bhsRYo.ZyNoe31iIbyoIGAF" --auto-tune --auto-bail -d 0 -t 15 -w voz_1_999999.txt -s 301 -o voz_balance.txt
+.\feroxbuster.exe -u https://voz.vn/u/ -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36" -b "cf_clearance=ycEdGitWnJ4V5_.m5ejlwKQDtoVnC1EkuucOw7ksCbI-1764593420-1.2.1.1-EK1m4zH2dgcB6eCTLkxWrfbX5Fgx5fpz1QgnwzhIWehG.MEd1xib0JSFOS3lQBBwW0_szLthU.1YD3ImDthNqhmcdHZw9Mog4FSYozXlF6GbnaU.uHVquzLtSoHWcD6B1vaSU9y5cpXsVhLzdeRJmccwujYWAITBL9.C.YQXBzyFhRaK5.iObGGpVS0cro2Q_nZiJX.xyNCul6l8QAc.WjUrB2_fFhClhmhJLnCT6bhsRYo.ZyNoe31iIbyoIGAF" --auto-tune --auto-bail -d 0 -t 9 -w voz_1_999999.txt -s 301 -o voz_balance.txt
 ```
 **Note:** Replace the cf_clearance cookie value with your own valid Cloudflare clearance token if needed.
 
